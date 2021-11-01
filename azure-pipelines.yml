@@ -5,19 +5,24 @@ pool:
   vmImage: 'ubuntu-20.04'
   demands:
   - npm
+  
+variables:
+  buildConfiguration: 'Release'
+  wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
+  dotnetSdkVersion: '5.x'
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Use .NET SDK 5.x'
+  displayName: 'Use .NET SDK $(dotnetSdkVersion)'
   inputs:
-    version: '5.x'
+    version: '$(dotnetSdkVersion)'
 
 - task: Npm@1
   displayName: 'Run npm install'
   inputs:
     verbose: false
 
-- script: './node_modules/.bin/node-sass Tailspin.SpaceGame.Web/wwwroot --output Tailspin.SpaceGame.Web/wwwroot'
+- script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
   displayName: 'Compile Sass assets'
 
 - task: gulp@1
@@ -25,7 +30,7 @@ steps:
 
 - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
   displayName: 'Write build info'
-  workingDirectory: Tailspin.SpaceGame.Web/wwwroot
+  workingDirectory: $(wwwrootDir)
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
@@ -33,6 +38,7 @@ steps:
     command: 'restore'
     projects: '**/*.csproj'
 
+<<<<<<< HEAD
 - template: templates/build.yml
   parameters:
     buildConfiguration: 'Debug'
@@ -40,6 +46,23 @@ steps:
 - template: templates/build.yml
   parameters:
     buildConfiguration: 'Release'
+=======
+- task: DotNetCoreCLI@2
+  displayName: 'Build the project - $(buildConfiguration)'
+  inputs:
+    command: 'build'
+    arguments: '--no-restore --configuration $(buildConfiguration)'
+    projects: '**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish the project - $(buildConfiguration)'
+  inputs:
+    command: 'publish'
+    projects: '**/*.csproj'
+    publishWebProjects: false
+    arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
+    zipAfterPublish: true
+>>>>>>> 7d62be2e53e70d013e333fb9699aedf839cddea9
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
