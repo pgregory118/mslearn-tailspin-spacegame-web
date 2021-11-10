@@ -1,4 +1,6 @@
 
+[![Build Status](https://dev.azure.com/pgregory118/Space%20game%20-%20web%20-%20pipeline/_apis/build/status/pgregory118.mslearn-tailspin-spacegame-web?branchName=main)](https://dev.azure.com/pgregory118/Space%20game%20-%20web%20-%20pipeline/_build/latest?definitionId=2&branchName=main)
+
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
